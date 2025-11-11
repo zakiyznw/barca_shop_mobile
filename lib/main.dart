@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:barca_shop/menu.dart';
+import 'package:barca_shop/screens/menu.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Football News',
+      title: 'Barca Shop',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch(
           primarySwatch: Colors.blue,

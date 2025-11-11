@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:barca_shop/widgets/left_drawer.dart';
+import 'package:barca_shop/widgets/product_card.dart';
+import 'package:barca_shop/screens/productlist_form.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
@@ -8,7 +11,7 @@ class MyHomePage extends StatelessWidget {
   final String kelas = "B";
 
   final List<ItemHomepage> items = [
-    ItemHomepage("All Products", Icons.store, Colors.blue),
+    ItemHomepage("All Products", Icons.shopping_cart_checkout, Colors.blue),
     ItemHomepage("My Products", Icons.inventory, Colors.green),
     ItemHomepage("Create Product", Icons.add_box, Colors.red),
   ];
@@ -18,11 +21,12 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Football News',
+          'Barca Shop',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
+      drawer: const LeftDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -43,7 +47,7 @@ class MyHomePage extends StatelessWidget {
                   const Padding(
                     padding: EdgeInsets.only(top: 16.0),
                     child: Text(
-                      'Selamat datang di Football News',
+                      'Selamat datang di Barca Shop',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18.0,
@@ -112,7 +116,7 @@ class ItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Theme.of(context).colorScheme.secondary,
+      color: item.color,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: () {
@@ -123,6 +127,13 @@ class ItemCard extends StatelessWidget {
                 content: Text("Kamu telah menekan tombol ${item.name}!"),
               ),
             );
+
+          if (item.name == "Tambah Produk") {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ProductFormPage()),
+            );
+          }
         },
         child: Container(
           padding: const EdgeInsets.all(8),
