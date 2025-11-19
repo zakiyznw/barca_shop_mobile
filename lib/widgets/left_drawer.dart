@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:barca_shop/screens/menu.dart';
 import 'package:barca_shop/screens/productlist_form.dart';
+import 'package:barca_shop/screens/product_entry_list.dart';
 
 class LeftDrawer extends StatelessWidget {
   const LeftDrawer({super.key});
@@ -34,6 +35,17 @@ class LeftDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ProductFormPage())); // <- harus sesuai class
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.add_reaction_rounded),
+            title: const Text('Product List'),
+            onTap: () {
+              // Route to news list page
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProductEntryListPage()),
+              );
             },
           ),
         ],

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:barca_shop/widgets/left_drawer.dart';
+import 'dart:convert';
+import 'package:provider/provider.dart';
+import 'package:pbp_django_auth/pbp_django_auth.dart';
+import 'package:barca_shop/screens/menu.dart';
 
 class ProductFormPage extends StatefulWidget {
   const ProductFormPage({super.key});
@@ -120,6 +124,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final request = context.watch<CookieRequest>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Form Tambah Produk'),
@@ -225,12 +230,52 @@ class _ProductFormPageState extends State<ProductFormPage> {
               // Save button
               Center(
                 child: ElevatedButton(
-                  onPressed: _onSave,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.indigo,
-                    padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
-                  ),
-                  child: const Text('Simpan', style: TextStyle(color: Colors.white)),
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      final name = _nameCtrl.text.trim();
+                      final price = int.tryParse(_priceCtrl.text.trim()) ?? 0;
+                      final description = _descCtrl.text.trim();
+
+                      // Sesuaikan URL dengan endpoint Django-mu
+                      final url = "http://10.0.2.2:8000/create-flutter/";
+
+                      // Kirim Map agar library menangani header JSON
+                      final payload = {
+                        "name": name,
+                        "price": price,         // PENTING: gunakan "price"
+                        "stock": 1,
+                        "description": description,
+                        "category": _category,
+                        "thumbnail": _thumbnailCtrl.text.trim(),
+                        "is_featured": _isFeatured,
+                      };
+
+                      // Jika postJson menerima Map, berikan payload langsung
+                      final response = await request.postJson(url, payload);
+
+                      // debug (jika ingin lihat raw response)
+                      // print("POST response: $response");
+
+                      if (!context.mounted) return;
+
+                      // Periksa format response dari backend. Saya pakai pattern 'status' == 'success'
+                      if (response != null && response['status'] == 'success') {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Product successfully saved!")),
+                        );
+                        Navigator.pop(context, true); // <-- kembalikan true untuk trigger refresh
+                      } else if (response != null && response['status'] == 'unauthorized') {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("You must login first.")),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Something went wrong. Response: $response")),
+                        );
+                      }
+                    }
+                  },
+                  child: const Text("Save"),
                 ),
               ),
             ],
